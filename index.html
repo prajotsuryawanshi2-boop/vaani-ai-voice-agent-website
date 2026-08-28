@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vaani AI — Indian Voice Agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">V</div><div><b>Vaani AI</b><span>Voice Agent Studio</span></div></div>
+      <nav>
+        <button class="nav-item active" data-page="overview">⌂ <span>Overview</span></button>
+        <button class="nav-item" data-page="agents">◉ <span>Agents</span></button>
+        <button class="nav-item" data-page="knowledge">◇ <span>Knowledge</span></button>
+        <button class="nav-item" data-page="voices">◌ <span>Voices</span></button>
+        <button class="nav-item" data-page="conversations">☷ <span>Conversations</span></button>
+        <button class="nav-item" data-page="analytics">▥ <span>Analytics</span></button>
+      </nav>
+      <div class="side-bottom">
+        <div class="language-mini">🇮🇳 <span>India-first multilingual</span></div>
+        <button class="settings">⚙ Settings</button>
+        <div class="profile"><div class="avatar">P</div><div><b>Workspace</b><span>Free plan</span></div><span>⋯</span></div>
+      </div>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div><div class="eyebrow">VOICE AGENT PLATFORM</div><h1 id="pageTitle">Overview</h1></div>
+        <div class="top-actions"><button class="icon-btn">⌕</button><button class="icon-btn">◔</button><button class="primary" id="createTop">+ Create agent</button></div>
+      </header>
+
+      <section class="page" id="overview">
+        <div class="hero">
+          <div>
+            <span class="pill">● Ready for Indian languages</span>
+            <h2>Build voice agents that<br><em>speak India.</em></h2>
+            <p>Give an agent a website, choose a language, and let customers ask questions naturally by voice.</p>
+            <div class="hero-actions"><button class="primary" id="startBuild">Create your first agent →</button><button class="secondary" id="demoBtn">Try voice demo</button></div>
+          </div>
+          <div class="orb"><div class="orb-core">◉</div><div class="wave w1"></div><div class="wave w2"></div><div class="wave w3"></div></div>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><span>Active agents</span><b>3</b><small>↑ 12% this month</small></div>
+          <div class="stat"><span>Conversations</span><b>1,284</b><small>↑ 24% this month</small></div>
+          <div class="stat"><span>Languages</span><b>18</b><small>Indian + English</small></div>
+          <div class="stat"><span>Avg. response</span><b>0.8s</b><small>Realtime target</small></div>
+        </div>
+
+        <div class="section-head"><div><h3>Your agents</h3><p>Manage and test your voice agents.</p></div><button class="ghost" id="newAgent2">+ New agent</button></div>
+        <div class="agent-grid">
+          <div class="agent-card"><div class="agent-icon">🎧</div><div class="card-top"><span class="status">● Live</span><span>⋯</span></div><h3>Website Assistant</h3><p>Answers questions from your website knowledge base.</p><div class="card-foot"><span>🇮🇳 Marathi</span><span>1,024 chats</span></div></div>
+          <div class="agent-card"><div class="agent-icon">🏪</div><div class="card-top"><span class="status">● Live</span><span>⋯</span></div><h3>Sales Assistant</h3><p>Product discovery and lead qualification by voice.</p><div class="card-foot"><span>🇮🇳 Hindi</span><span>186 chats</span></div></div>
+          <div class="agent-card muted-card"><div class="agent-icon">＋</div><h3>Create an agent</h3><p>Start with a prompt, website or document.</p><button class="secondary full" id="newAgent3">Create →</button></div>
+        </div>
+      </section>
+
+      <section class="page hidden" id="agents">
+        <div class="section-head"><div><h2>Agents</h2><p>Create and configure your AI voice agents.</p></div><button class="primary" id="newAgent4">+ New agent</button></div>
+        <div class="panel"><div class="empty-icon">◉</div><h3>Build your first multilingual agent</h3><p>Choose a voice, connect knowledge, and publish it to your website.</p><button class="primary" id="newAgent5">Create agent</button></div>
+      </section>
+
+      <section class="page hidden" id="knowledge">
+        <div class="section-head"><div><h2>Knowledge base</h2><p>Connect websites and documents your agent can understand.</p></div><button class="primary" id="addKnowledge">+ Add source</button></div>
+        <div class="panel source-panel">
+          <div class="source-row"><div class="source-icon">🌐</div><div><b>Website crawler</b><p>Paste a public URL and index its pages.</p></div><button class="secondary" id="crawlBtn">Add website</button></div>
+          <div class="source-row"><div class="source-icon">📄</div><div><b>Documents</b><p>Upload PDF, TXT or FAQ content.</p></div><button class="secondary">Upload</button></div>
+        </div>
+        <div class="source-list"><div class="source-item"><span>🌐</span><div><b>example.com</b><small>Demo source · indexed 2 min ago</small></div><span class="indexed">Indexed</span></div></div>
+      </section>
+
+      <section class="page hidden" id="voices">
+        <div class="section-head"><div><h2>Voices & languages</h2><p>Select the voice your agent should use.</p></div></div>
+        <div class="language-grid" id="languageGrid"></div>
+      </section>
+
+      <section class="page hidden" id="conversations">
+        <div class="section-head"><div><h2>Conversations</h2><p>Review recent agent interactions.</p></div></div>
+        <div class="panel table"><div class="table-row header"><span>Agent</span><span>Language</span><span>Duration</span><span>Status</span></div><div class="table-row"><span>Website Assistant</span><span>🇮🇳 Marathi</span><span>02:18</span><span class="status">Resolved</span></div><div class="table-row"><span>Sales Assistant</span><span>🇮🇳 Hindi</span><span>04:02</span><span class="status">Resolved</span></div><div class="table-row"><span>Website Assistant</span><span>🇬🇧 English</span><span>01:44</span><span class="status">Resolved</span></div></div>
+      </section>
+
+      <section class="page hidden" id="analytics">
+        <div class="section-head"><div><h2>Analytics</h2><p>Monitor agent usage and performance.</p></div></div>
+        <div class="panel chart-panel"><div class="chart-title"><b>Conversations</b><span>Last 7 days</span></div><div class="bars"><i style="height:42%"></i><i style="height:61%"></i><i style="height:49%"></i><i style="height:78%"></i><i style="height:68%"></i><i style="height:92%"></i><i style="height:76%"></i></div><div class="days"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div></div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal hidden" id="agentModal">
+    <div class="modal-card">
+      <button class="close" id="closeModal">×</button>
+      <span class="pill">NEW VOICE AGENT</span><h2>Create your agent</h2><p>Set the basics now. Voice, knowledge and tools can be configured next.</p>
+      <label>Agent name<input id="agentName" placeholder="e.g. Website Assistant"></label>
+      <label>Website URL<input id="websiteUrl" placeholder="https://yourwebsite.com"></label>
+      <label>Primary language<select id="languageSelect"></select></label>
+      <label>Agent instructions<textarea id="instructions" placeholder="What should this agent do?"></textarea></label>
+      <div class="modal-actions"><button class="secondary" id="cancelModal">Cancel</button><button class="primary" id="saveAgent">Create agent</button></div>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="toast"></div>
+  <script src="app.js"></script>
+</body>
+</html>
