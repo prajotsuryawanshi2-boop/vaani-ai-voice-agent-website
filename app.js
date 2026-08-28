@@ -1,8 +1,3 @@
-// ===============================
-// VAAANI AI - FRONTEND APP
-// ===============================
-
-// Supported languages
 const languages = [
   ["🇮🇳", "Marathi", "मराठी"],
   ["🇮🇳", "Hindi", "हिन्दी"],
@@ -24,101 +19,77 @@ const languages = [
   ["🇬🇧", "English", "English"]
 ];
 
-// ===============================
-// HELPERS
-// ===============================
+const $ = (selector) =>
+  document.querySelector(selector);
 
-const $ = (selector) => document.querySelector(selector);
-
-const pages = [...document.querySelectorAll(".page")];
+const pages = [
+  ...document.querySelectorAll(".page")
+];
 
 const title = $("#pageTitle");
 
-// API base URL
-// Empty string means same Vercel domain
-const API_BASE = "";
+const API = "/api";
 
-// ===============================
+// -------------------------
 // PAGE NAVIGATION
-// ===============================
+// -------------------------
 
 function showPage(name) {
   pages.forEach((page) => {
-    page.classList.toggle("hidden", page.id !== name);
-  });
-
-  document.querySelectorAll(".nav-item").forEach((button) => {
-    button.classList.toggle(
-      "active",
-      button.dataset.page === name
+    page.classList.toggle(
+      "hidden",
+      page.id !== name
     );
   });
 
-  if (title) {
-    title.textContent =
-      name.charAt(0).toUpperCase() + name.slice(1);
-  }
+  document
+    .querySelectorAll(".nav-item")
+    .forEach((button) => {
+      button.classList.toggle(
+        "active",
+        button.dataset.page === name
+      );
+    });
+
+  title.textContent =
+    name.charAt(0).toUpperCase() +
+    name.slice(1);
 
   window.scrollTo({
     top: 0,
     behavior: "smooth"
   });
 
-  // Load agents whenever Agents page opens
   if (name === "agents") {
     loadAgents();
   }
 }
 
-document.querySelectorAll(".nav-item").forEach((button) => {
-  button.onclick = () => {
-    showPage(button.dataset.page);
-  };
-});
+// Navigation buttons
+document
+  .querySelectorAll(".nav-item")
+  .forEach((button) => {
+    button.onclick = () =>
+      showPage(button.dataset.page);
+  });
 
-// ===============================
-// TOAST
-// ===============================
-
-function toast(message) {
-  const t = $("#toast");
-
-  if (!t) return;
-
-  t.textContent = message;
-  t.classList.remove("hidden");
-
-  setTimeout(() => {
-    t.classList.add("hidden");
-  }, 3000);
-}
-
-// ===============================
+// -------------------------
 // MODAL
-// ===============================
+// -------------------------
 
 const modal = $("#agentModal");
 
 function openModal() {
-  if (!modal) return;
-
   modal.classList.remove("hidden");
 
-  const nameInput = $("#agentName");
-
-  if (nameInput) {
-    setTimeout(() => {
-      nameInput.focus();
-    }, 100);
-  }
+  $("#agentName").focus();
 }
 
 function closeModal() {
-  if (!modal) return;
-
   modal.classList.add("hidden");
 }
 
+// Create agent buttons
 [
   "createTop",
   "startBuild",
@@ -134,384 +105,377 @@ function closeModal() {
   }
 });
 
-const closeModalButton = $("#closeModal");
-const cancelModalButton = $("#cancelModal");
+$("#closeModal").onclick = closeModal;
+$("#cancelModal").onclick = closeModal;
 
-if (closeModalButton) {
-  closeModalButton.onclick = closeModal;
+// -------------------------
+// LANGUAGES
+// -------------------------
+
+const langSelect =
+  $("#languageSelect");
+
+languages.forEach((language, index) => {
+  const option =
+    document.createElement("option");
+
+  option.value = language[1];
+
+  option.textContent =
+    `${language[0]} ${language[1]} — ${language[2]}`;
+
+  if (index === 0) {
+    option.selected = true;
+  }
+
+  langSelect.appendChild(option);
+});
+
+// Voice language cards
+const languageGrid =
+  $("#languageGrid");
+
+languages.forEach((language) => {
+  const div =
+    document.createElement("div");
+
+  div.className = "language";
+
+  div.innerHTML = `
+    <span class="flag">
+      ${language[0]}
+    </span>
+
+    <div>
+      <b>${language[1]}</b>
+      <small>${language[2]}</small>
+    </div>
+  `;
+
+  div.onclick = () => {
+    toast(
+      `${language[1]} selected`
+    );
+  };
+
+  languageGrid.appendChild(div);
+});
+
+// -------------------------
+// TOAST
+// -------------------------
+
+function toast(message) {
+  const element = $("#toast");
+
+  element.textContent = message;
+
+  element.classList.remove("hidden");
+
+  setTimeout(() => {
+    element.classList.add("hidden");
+  }, 2600);
 }
 
-if (cancelModalButton) {
-  cancelModalButton.onclick = closeModal;
-}
-
-// Close modal when clicking outside
-if (modal) {
-  modal.addEventListener("click", (event) => {
-    if (event.target === modal) {
-      closeModal();
-    }
-  });
-}
-
-// ===============================
-// LANGUAGE SELECT
-// ===============================
-
-const langSelect = $("#languageSelect");
-
-if (langSelect) {
-  languages.forEach((language, index) => {
-    const option = document.createElement("option");
-
-    option.value = language[1];
-    option.textContent =
-      `${language[0]} ${language[1]} — ${language[2]}`;
-
-    if (index === 0) {
-      option.selected = true;
-    }
-
-    langSelect.appendChild(option);
-  });
-}
-
-// ===============================
-// LANGUAGE GRID
-// ===============================
-
-const languageGrid = $("#languageGrid");
-
-if (languageGrid) {
-  languages.forEach((language) => {
-    const div = document.createElement("div");
-
-    div.className = "language";
-
-    div.innerHTML = `
-      <span class="flag">${language[0]}</span>
-
-      <div>
-        <b>${language[1]}</b>
-        <small>${language[2]}</small>
-      </div>
-    `;
-
-    div.onclick = () => {
-      toast(`${language[1]} selected`);
-    };
-
-    languageGrid.appendChild(div);
-  });
-}
-
-// ===============================
+// -------------------------
 // CREATE AGENT
-// ===============================
+// -------------------------
 
-const saveAgentButton = $("#saveAgent");
-
-if (saveAgentButton) {
-  saveAgentButton.onclick = async () => {
+$("#saveAgent").onclick =
+  async function () {
 
     const name =
-      $("#agentName")?.value.trim() || "Untitled Agent";
+      $("#agentName").value.trim();
 
     const websiteUrl =
-      $("#websiteUrl")?.value.trim() || "";
+      $("#websiteUrl").value.trim();
 
     const language =
-      $("#languageSelect")?.value || "Marathi";
+      $("#languageSelect").value;
 
     const instructions =
-      $("#instructions")?.value.trim() || "";
+      $("#instructions").value.trim();
 
-    // Website URL is required by backend
+    if (!name) {
+      toast("Please enter agent name.");
+      return;
+    }
+
     if (!websiteUrl) {
-      toast("Please enter your website URL.");
-      $("#websiteUrl")?.focus();
+      toast("Please enter website URL.");
       return;
     }
 
-    // Basic URL validation
-    try {
-      new URL(websiteUrl);
-    } catch (error) {
-      toast("Please enter a valid website URL.");
-      $("#websiteUrl")?.focus();
-      return;
-    }
-
-    // Disable button while request is running
-    saveAgentButton.disabled = true;
-    saveAgentButton.textContent = "Creating...";
-
     try {
 
-      const response = await fetch(
-        `${API_BASE}/api/agents`,
-        {
-          method: "POST",
+      const response =
+        await fetch(
+          `${API}/agents`,
+          {
+            method: "POST",
 
-          headers: {
-            "Content-Type": "application/json"
-          },
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
 
-          body: JSON.stringify({
-            name,
-            websiteUrl,
-            language,
-            instructions
-          })
-        }
-      );
+            body: JSON.stringify({
+              name,
+              websiteUrl,
+              language,
+              instructions
+            })
+          }
+        );
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
-      if (!response.ok || !data.success) {
+      if (!response.ok) {
         throw new Error(
-          data.message || "Failed to create agent."
+          data.message ||
+          "Failed to create agent."
         );
       }
 
-      // Clear form
-      if ($("#agentName")) {
-        $("#agentName").value = "";
-      }
-
-      if ($("#websiteUrl")) {
-        $("#websiteUrl").value = "";
-      }
-
-      if ($("#instructions")) {
-        $("#instructions").value = "";
-      }
-
       closeModal();
+
+      // Clear form
+      $("#agentName").value = "";
+      $("#websiteUrl").value = "";
+      $("#instructions").value = "";
 
       showPage("agents");
 
       toast(
-        `✅ ${name} created successfully!`
+        `${name} created successfully! 🚀`
       );
 
-      // Refresh agent list
-      await loadAgents();
+      loadAgents();
 
     } catch (error) {
 
-      console.error("Create Agent Error:", error);
+      console.error(error);
 
       toast(
-        `❌ ${error.message || "Unable to create agent."}`
+        "Agent create failed. Backend check करा."
       );
-
-    } finally {
-
-      saveAgentButton.disabled = false;
-      saveAgentButton.textContent = "Create agent";
     }
   };
-}
 
-// ===============================
+// -------------------------
 // LOAD AGENTS
-// ===============================
+// -------------------------
 
 async function loadAgents() {
 
-  const agentsPage = $("#agents");
-
-  if (!agentsPage) return;
-
   try {
 
-    const response = await fetch(
-      `${API_BASE}/api/agents`
-    );
-
-    const data = await response.json();
-
-    if (!response.ok || !data.success) {
-      throw new Error(
-        data.message || "Unable to load agents."
+    const response =
+      await fetch(
+        `${API}/agents`
       );
+
+    const data =
+      await response.json();
+
+    if (!data.success) {
+      return;
     }
 
-    renderAgents(data.agents || []);
+    renderAgents(data.agents);
 
   } catch (error) {
 
-    console.error("Load Agents Error:", error);
-
-    renderAgents([]);
-
-    toast(
-      "Unable to load agents from server."
+    console.error(
+      "Load agents error:",
+      error
     );
   }
 }
 
-// ===============================
-// RENDER AGENTS
-// ===============================
+// -------------------------
+// DISPLAY AGENTS
+// -------------------------
 
 function renderAgents(agents) {
 
-  const agentsPage = $("#agents");
+  const panel =
+    document.querySelector(
+      "#agents .panel"
+    );
 
-  if (!agentsPage) return;
+  if (!panel) return;
 
-  const existingPanel =
-    agentsPage.querySelector(".agent-list-panel");
-
-  if (existingPanel) {
-    existingPanel.remove();
-  }
-
-  // If no agents
   if (!agents.length) {
+
+    panel.innerHTML = `
+      <div class="empty-icon">◉</div>
+
+      <h3>
+        Build your first multilingual agent
+      </h3>
+
+      <p>
+        Choose a voice, connect knowledge,
+        and publish it to your website.
+      </p>
+
+      <button
+        class="primary"
+        id="dynamicCreateAgent"
+      >
+        Create agent
+      </button>
+    `;
+
+    $("#dynamicCreateAgent").onclick =
+      openModal;
+
     return;
   }
 
-  const panel = document.createElement("div");
-
-  panel.className = "panel agent-list-panel";
-
   panel.innerHTML = `
-    <h3>Your created agents</h3>
-    <p>Agents created from this dashboard.</p>
+    <div class="agent-list">
+      ${agents
+        .map(
+          (agent) => `
+            <div class="agent-card">
+
+              <div class="agent-icon">
+                🎧
+              </div>
+
+              <div class="card-top">
+                <span class="status">
+                  ● ${agent.status}
+                </span>
+
+                <span>⋯</span>
+              </div>
+
+              <h3>
+                ${escapeHtml(agent.name)}
+              </h3>
+
+              <p>
+                ${escapeHtml(
+                  agent.instructions ||
+                  "AI voice agent"
+                )}
+              </p>
+
+              <div class="card-foot">
+                <span>
+                  🇮🇳 ${escapeHtml(
+                    agent.language
+                  )}
+                </span>
+
+                <span>
+                  ${agent.chats} chats
+                </span>
+              </div>
+
+            </div>
+          `
+        )
+        .join("")}
+    </div>
   `;
-
-  agents.forEach((agent) => {
-
-    const row = document.createElement("div");
-
-    row.className = "source-row";
-
-    row.innerHTML = `
-      <div class="source-icon">🎙️</div>
-
-      <div style="flex:1">
-        <b>${escapeHtml(agent.name)}</b>
-
-        <p>
-          ${escapeHtml(agent.language || "Marathi")}
-          · ${escapeHtml(agent.websiteUrl || "No website")}
-        </p>
-      </div>
-
-      <span class="indexed">
-        Ready
-      </span>
-    `;
-
-    panel.appendChild(row);
-  });
-
-  agentsPage.appendChild(panel);
 }
 
-// ===============================
-// WEBSITE CRAWLER
-// ===============================
+// -------------------------
+// SECURITY
+// -------------------------
 
-const crawlButton = $("#crawlBtn");
+function escapeHtml(text) {
 
-if (crawlButton) {
+  const div =
+    document.createElement("div");
 
-  crawlButton.onclick = async () => {
+  div.textContent = text;
 
-    const websiteUrl = prompt(
-      "Website URL (e.g. https://example.com)"
-    );
+  return div.innerHTML;
+}
 
-    if (!websiteUrl) {
-      return;
-    }
+// -------------------------
+// KNOWLEDGE / CRAWLER
+// -------------------------
 
-    try {
+$("#crawlBtn").onclick =
+  async function () {
 
-      new URL(websiteUrl);
-
-    } catch (error) {
-
-      toast("Please enter a valid website URL.");
-
-      return;
-    }
-
-    crawlButton.disabled = true;
-    crawlButton.textContent = "Crawling...";
-
-    try {
-
-      const response = await fetch(
-        `${API_BASE}/api/crawl`,
-        {
-          method: "POST",
-
-          headers: {
-            "Content-Type": "application/json"
-          },
-
-          body: JSON.stringify({
-            websiteUrl
-          })
-        }
+    const url =
+      prompt(
+        "Website URL (e.g. https://example.com)"
       );
 
-      const data = await response.json();
+    if (!url) return;
 
-      if (!response.ok || !data.success) {
-        throw new Error(
-          data.message || "Crawler request failed."
+    try {
+
+      const response =
+        await fetch(
+          `${API}/crawl`,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body: JSON.stringify({
+              websiteUrl: url
+            })
+          }
+        );
+
+      const data =
+        await response.json();
+
+      if (data.success) {
+
+        toast(
+          `Website queued: ${url}`
+        );
+
+      } else {
+
+        toast(
+          data.message ||
+          "Crawler failed."
         );
       }
 
-      toast(
-        `🌐 Website added: ${websiteUrl}`
-      );
-
     } catch (error) {
 
-      console.error("Crawler Error:", error);
+      console.error(error);
 
       toast(
-        `❌ ${error.message || "Crawler failed."}`
+        "Crawler connection failed."
       );
-
-    } finally {
-
-      crawlButton.disabled = false;
-      crawlButton.textContent = "Add website";
     }
   };
-}
 
-// ===============================
-// KNOWLEDGE BUTTON
-// ===============================
+// Knowledge button
+$("#addKnowledge").onclick =
+  () => showPage("knowledge");
 
-const addKnowledgeButton = $("#addKnowledge");
-
-if (addKnowledgeButton) {
-  addKnowledgeButton.onclick = () => {
-    showPage("knowledge");
-  };
-}
-
-// ===============================
+// -------------------------
 // VOICE DEMO
-// ===============================
+// -------------------------
 
-const demoButton = $("#demoBtn");
+$("#demoBtn").onclick =
+  function () {
 
-if (demoButton) {
-
-  demoButton.onclick = () => {
-
-    if (!("speechSynthesis" in window)) {
+    if (
+      !(
+        "speechSynthesis"
+        in window
+      )
+    ) {
 
       toast(
         "Your browser does not support voice demo."
@@ -520,8 +484,6 @@ if (demoButton) {
       return;
     }
 
-    speechSynthesis.cancel();
-
     const utterance =
       new SpeechSynthesisUtterance(
         "नमस्कार! मी Vaani AI आहे. तुमच्या website मधील माहितीवरून मी तुमच्या निवडलेल्या भाषेत उत्तर देऊ शकतो."
@@ -529,88 +491,18 @@ if (demoButton) {
 
     utterance.lang = "mr-IN";
     utterance.rate = 0.95;
-    utterance.pitch = 1;
 
-    utterance.onstart = () => {
-      toast("🎙️ Voice demo started");
-    };
+    speechSynthesis.speak(
+      utterance
+    );
 
-    utterance.onend = () => {
-      toast("Voice demo finished");
-    };
-
-    utterance.onerror = () => {
-      toast("Voice demo could not start.");
-    };
-
-    speechSynthesis.speak(utterance);
+    toast(
+      "Voice demo started 🎙️"
+    );
   };
-}
 
-// ===============================
-// HTML ESCAPE
-// ===============================
+// -------------------------
+// INITIAL LOAD
+// -------------------------
 
-function escapeHtml(value) {
-
-  return String(value)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-// ===============================
-// BACKEND HEALTH CHECK
-// ===============================
-
-async function checkBackend() {
-
-  try {
-
-    const response = await fetch(
-      `${API_BASE}/api/health`
-    );
-
-    const data = await response.json();
-
-    if (data.success) {
-
-      console.log(
-        "✅ Vaaani AI backend connected."
-      );
-
-    } else {
-
-      console.warn(
-        "⚠️ Backend responded but health check failed."
-      );
-    }
-
-  } catch (error) {
-
-    console.warn(
-      "⚠️ Backend is not reachable:",
-      error
-    );
-  }
-}
-
-// ===============================
-// INITIALIZE APP
-// ===============================
-
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
-
-    console.log(
-      "🚀 Vaaani AI frontend loaded."
-    );
-
-    checkBackend();
-
-    showPage("overview");
-  }
-);
+loadAgents();
